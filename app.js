@@ -40,19 +40,32 @@ app.get("/file/:filename",(req,res)=>{
     })
   })
 
+
+ 
   app.get("/edit/:filename",(req,res)=>{
+   if(req.method === "GET"){
     fs.readFile(`./files/${req.params.filename}`,'utf8' , function(err , filedata){
         res.render("edit" , {filename:req.params.filename, filedata:filedata})
        
       })    
+   }
+   
   })
 
-
-  app.get("/edit",(req,res)=>{
-     fs.rename(`./files/${req.body.previous}` ,`./files/${req.body.new}`) ,(err)=>{
+  app.post("/edit",(req,res)=>{
+    fs.rename(`./files/${req.body.previous}` ,`./files/${req.body.new}.txt` ,(err)=>{
+        if (err) {
+            console.error('Error deleting file:', err);
+          } else {
             res.redirect("/")
-     }
-  })
+          }
+ 
+ }) 
+})
+
+
+
+
 
 app.get("/delete/:filename" , (req,res)=>{
     fs.unlink(`./files/${req.params.filename}`, (err) => {
